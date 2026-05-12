@@ -203,4 +203,98 @@ describe('serialization/unserialization', () => {
         expect(schema.serialize(expectedData)).toEqual(data);
         expect(schema.unserialize(data)).toEqual(expectedData);
     });
+
+    it('can exclude keys from snakecase to camelcase conversion', () => {
+        const data = {
+            full_name: 'John Doe',
+            raw_value: 'keep me'
+        };
+
+        const expectedData = {
+            fullName: 'John Doe',
+            raw_value: 'keep me'
+        };
+
+        const schema = new Adaptr('schema', ['snakecase', 'camelcase']);
+
+        expect(schema.unserialize(data, ['raw_value'])).toEqual(expectedData);
+        expect(schema.serialize(expectedData, ['raw_value'])).toEqual(data);
+    });
+
+    it('can exclude keys from camelcase to snakecase conversion', () => {
+        const data = {
+            fullName: 'John Doe',
+            rawValue: 'keep me'
+        };
+
+        const expectedData = {
+            full_name: 'John Doe',
+            rawValue: 'keep me'
+        };
+
+        const schema = new Adaptr('schema', ['camelcase', 'snakecase']);
+
+        expect(schema.unserialize(data, ['rawValue'])).toEqual(expectedData);
+        expect(schema.serialize(expectedData, ['rawValue'])).toEqual(data);
+    });
+
+    it('can exclude keys from nested coding style conversion', () => {
+        const data = {
+            store_name: 'Super Store',
+            products: [
+                {
+                    prod_name: 'Sampoo',
+                    raw_value: 'keep me',
+                    prod_meta: {
+                        meta_name: 'Meta',
+                        raw_child: 'keep child'
+                    }
+                }
+            ]
+        };
+
+        const expectedData = {
+            storeName: 'Super Store',
+            products: [
+                {
+                    prodName: 'Sampoo',
+                    raw_value: 'keep me',
+                    prodMeta: {
+                        metaName: 'Meta',
+                        raw_child: 'keep child'
+                    }
+                }
+            ]
+        };
+
+        const schema = new Adaptr('schema', ['snakecase', 'camelcase']);
+        const exclude = ['raw_value', 'raw_child'];
+
+        expect(schema.unserialize(data, exclude)).toEqual(expectedData);
+        expect(schema.serialize(expectedData, exclude)).toEqual(data);
+    });
+
+    it('passes excluded keys to nested adapters', () => {
+        const data = {
+            payload: {
+                full_name: 'John Doe',
+                raw_value: 'keep me'
+            }
+        };
+
+        const expectedData = {
+            payload: {
+                fullName: 'John Doe',
+                raw_value: 'keep me'
+            }
+        };
+
+        const payloadSchema = new Adaptr('payload', ['snakecase', 'camelcase']);
+        const schema = new Adaptr('schema', {
+            payload: payloadSchema
+        });
+
+        expect(schema.unserialize(data, ['raw_value'])).toEqual(expectedData);
+        expect(schema.serialize(expectedData, ['raw_value'])).toEqual(data);
+    });
 });

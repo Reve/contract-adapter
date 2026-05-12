@@ -110,7 +110,7 @@ export default class Adaptr {
         }
     }
 
-    serialize(data) {
+    serialize(data, exclude = []) {
         if (typeof data !== 'object') {
             throw new Error(`Expected an object for data, but found ${data} of type ${typeof data}`);
         }
@@ -118,7 +118,7 @@ export default class Adaptr {
         let result = {};
 
         if (Array.isArray(this._schema)) {
-            result = convertDataToStyle(data, this._server);
+            result = convertDataToStyle(data, this._server, exclude);
         } else {
             const flippedSchema = Object.entries(this._schema).reduce((ret, entry) => {
                 const [key, value] = entry;
@@ -144,10 +144,10 @@ export default class Adaptr {
                         }
 
                         if (data[s].length > 0) {
-                            result[flippedSchema[s]._key] = data[s].map((d) => flippedSchema[s].serialize(d));
+                            result[flippedSchema[s]._key] = data[s].map((d) => flippedSchema[s].serialize(d, exclude));
                         }
                     } else {
-                        result[flippedSchema[s]._key] = flippedSchema[s].serialize(data[s]);
+                        result[flippedSchema[s]._key] = flippedSchema[s].serialize(data[s], exclude);
                     }
                 }
                 return '';
@@ -157,7 +157,7 @@ export default class Adaptr {
         return result;
     }
 
-    unserialize(data) {
+    unserialize(data, exclude = []) {
         if (typeof data !== 'object') {
             throw new Error(`Expected an object for data, but found ${data} of type ${typeof data}`);
         }
@@ -165,7 +165,7 @@ export default class Adaptr {
         let result = {};
 
         if (Array.isArray(this._schema)) {
-            result = convertDataToStyle(data, this._client);
+            result = convertDataToStyle(data, this._client, exclude);
         } else {
             Object.keys(this._schema).map((s) => {
                 if (!data.hasOwnProperty(s)) {
@@ -181,10 +181,10 @@ export default class Adaptr {
                         }
 
                         if (data[s].length > 0) {
-                            result[this._schema[s]._key] = data[s].map((d) => this._schema[s].unserialize(d));
+                            result[this._schema[s]._key] = data[s].map((d) => this._schema[s].unserialize(d, exclude));
                         }
                     } else {
-                        result[this._schema[s]._key] = this._schema[s].unserialize(data[s]);
+                        result[this._schema[s]._key] = this._schema[s].unserialize(data[s], exclude);
                     }
                 }
 
