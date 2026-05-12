@@ -1,17 +1,17 @@
 {
-    "name": "adaptr",
-    "version": "1.1.5",
-    "description": "A small helper that allows the transformation of data received from a server to a more JS friendly format. It works in both direction.",
+    "name": "contract-adapter",
+    "version": "1.0.0",
+    "description": "A tiny bidirectional DTO adapter for translating backend API contracts into frontend models and back.",
     "bugs": {
-        "url": "https://github.com/agilegeeks/adaptr/issues"
+        "url": "https://github.com/Reve/contract-adapter/issues"
     },
-    "homepage": "https://github.com/agilegeeks/adaptr",
+    "homepage": "https://github.com/Reve/contract-adapter",
     "repository": {
-        "url": "https://github.com/agilegeeks/adaptr.git",
+        "url": "git+https://github.com/Reve/contract-adapter.git",
         "type": "git"
     },
-    "main": "dist/adaptr.js",
-    "module": "dist/adaptr.es.js",
+    "main": "dist/contract-adapter.js",
+    "module": "dist/contract-adapter.es.js",
     "scripts": {
         "build": "npm run clean && run-p build:*",
         "build:development": "NODE_ENV=development rollup -c",
@@ -30,10 +30,18 @@
         "typecheck": "run-p tsc:ci"
     },
     "keywords": [
+        "dto",
         "adapter",
-        "pattern",
+        "contract",
+        "api",
         "serializer",
-        "deserializer"
+        "deserializer",
+        "snake_case",
+        "camelCase",
+        "case-converter",
+        "frontend",
+        "backend",
+        "json"
     ],
     "files": [
         "dist/",
