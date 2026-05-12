@@ -89,7 +89,7 @@ function convertDataToStyle(data, style, exclude = []) {
     return results;
 }
 
-export default class Adaptr {
+export default class ContractAdapter {
     constructor(key, schema) {
         if (!key || typeof key !== 'string') {
             throw new Error(`Expected a string for key, but found ${key} of type ${typeof key} `);
@@ -110,7 +110,7 @@ export default class Adaptr {
         }
     }
 
-    serialize(data, exclude = []) {
+    toServer(data, exclude = []) {
         if (typeof data !== 'object') {
             throw new Error(`Expected an object for data, but found ${data} of type ${typeof data}`);
         }
@@ -125,7 +125,7 @@ export default class Adaptr {
                 if (typeof value === 'string') {
                     ret[value] = key;
                 } else if (typeof value === 'object') {
-                    ret[value._key] = new Adaptr(key, value._schema);
+                    ret[value._key] = new ContractAdapter(key, value._schema);
                 }
                 return ret;
             }, {});
@@ -144,10 +144,10 @@ export default class Adaptr {
                         }
 
                         if (data[s].length > 0) {
-                            result[flippedSchema[s]._key] = data[s].map((d) => flippedSchema[s].serialize(d, exclude));
+                            result[flippedSchema[s]._key] = data[s].map((d) => flippedSchema[s].toServer(d, exclude));
                         }
                     } else {
-                        result[flippedSchema[s]._key] = flippedSchema[s].serialize(data[s], exclude);
+                        result[flippedSchema[s]._key] = flippedSchema[s].toServer(data[s], exclude);
                     }
                 }
                 return '';
@@ -157,7 +157,7 @@ export default class Adaptr {
         return result;
     }
 
-    unserialize(data, exclude = []) {
+    fromServer(data, exclude = []) {
         if (typeof data !== 'object') {
             throw new Error(`Expected an object for data, but found ${data} of type ${typeof data}`);
         }
@@ -181,10 +181,10 @@ export default class Adaptr {
                         }
 
                         if (data[s].length > 0) {
-                            result[this._schema[s]._key] = data[s].map((d) => this._schema[s].unserialize(d, exclude));
+                            result[this._schema[s]._key] = data[s].map((d) => this._schema[s].fromServer(d, exclude));
                         }
                     } else {
-                        result[this._schema[s]._key] = this._schema[s].unserialize(data[s], exclude);
+                        result[this._schema[s]._key] = this._schema[s].fromServer(data[s], exclude);
                     }
                 }
 
@@ -193,5 +193,13 @@ export default class Adaptr {
         }
 
         return result;
+    }
+
+    serialize(data, exclude = []) {
+        return this.toServer(data, exclude);
+    }
+
+    unserialize(data, exclude = []) {
+        return this.fromServer(data, exclude);
     }
 }

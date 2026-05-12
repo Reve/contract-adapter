@@ -31,8 +31,8 @@ But the frontend usually wants this:
 
 `contract-adapter` gives you one explicit, reversible mapping layer:
 
-* `unserialize()` converts server/API data into client/frontend data.
-* `serialize()` converts client/frontend data back into server/API data.
+* `fromServer()` converts server/API data into client/frontend data.
+* `toServer()` converts client/frontend data back into server/API data.
 * Explicit schemas are supported.
 * Automatic `snakecase` ↔ `camelcase` conversion is supported.
 * Nested objects and arrays are supported.
@@ -59,7 +59,7 @@ const userAdapter = new ContractAdapter('user', {
   is_logged_in: 'isLoggedIn',
 });
 
-const clientUser = userAdapter.unserialize(userFromApi);
+const clientUser = userAdapter.fromServer(userFromApi);
 
 console.log(clientUser);
 // {
@@ -67,7 +67,7 @@ console.log(clientUser);
 //   isLoggedIn: true
 // }
 
-const serverUser = userAdapter.serialize(clientUser);
+const serverUser = userAdapter.toServer(clientUser);
 
 console.log(serverUser);
 // {
@@ -95,14 +95,14 @@ const userAdapter = new ContractAdapter('user', {
   email: 'email',
 });
 
-const frontendUser = userAdapter.unserialize(apiUser);
+const frontendUser = userAdapter.fromServer(apiUser);
 
 // {
 //   fullName: 'John Doe',
 //   email: 'john@example.com'
 // }
 
-const payload = userAdapter.serialize(frontendUser);
+const payload = userAdapter.toServer(frontendUser);
 
 // {
 //   full_name: 'John Doe',
@@ -121,7 +121,7 @@ import ContractAdapter from 'contract-adapter';
 
 const userAdapter = new ContractAdapter('user', ['snakecase', 'camelcase']);
 
-const frontendUser = userAdapter.unserialize({
+const frontendUser = userAdapter.fromServer({
   full_name: 'John Doe',
   email: 'john@example.com',
 });
@@ -131,7 +131,7 @@ const frontendUser = userAdapter.unserialize({
 //   email: 'john@example.com'
 // }
 
-const apiPayload = userAdapter.serialize(frontendUser);
+const apiPayload = userAdapter.toServer(frontendUser);
 
 // {
 //   full_name: 'John Doe',
@@ -171,7 +171,7 @@ const apiUser = {
   },
 };
 
-const frontendUser = userAdapter.unserialize(apiUser);
+const frontendUser = userAdapter.fromServer(apiUser);
 
 // {
 //   fullName: 'John Doe',
@@ -181,7 +181,7 @@ const frontendUser = userAdapter.unserialize(apiUser);
 //   }
 // }
 
-const apiPayload = userAdapter.serialize(frontendUser);
+const apiPayload = userAdapter.toServer(frontendUser);
 
 // {
 //   full_name: 'John Doe',
@@ -201,7 +201,7 @@ import ContractAdapter from 'contract-adapter';
 
 const storeAdapter = new ContractAdapter('store', ['snakecase', 'camelcase']);
 
-const frontendStore = storeAdapter.unserialize({
+const frontendStore = storeAdapter.fromServer({
   store_name: 'Super Store',
   products: [
     {
@@ -239,7 +239,7 @@ import ContractAdapter from 'contract-adapter';
 
 const adapter = new ContractAdapter('payload', ['snakecase', 'camelcase']);
 
-const frontendPayload = adapter.unserialize(
+const frontendPayload = adapter.fromServer(
   {
     full_name: 'John Doe',
     raw_value: 'keep this key unchanged',
@@ -254,6 +254,17 @@ const frontendPayload = adapter.unserialize(
 ```
 
 Exclusions are also passed to nested conversions.
+
+### Backward compatibility
+
+`serialize()` and `unserialize()` are still supported.
+
+```js
+adapter.unserialize(apiData); // same as adapter.fromServer(apiData)
+adapter.serialize(clientData); // same as adapter.toServer(clientData)
+```
+
+New code should prefer `fromServer()` and `toServer()`.
 
 ## API
 
@@ -284,20 +295,20 @@ Automatic style schema:
 ['camelcase', 'snakecase']
 ```
 
-### `adapter.unserialize(data, exclude?)`
+### `adapter.fromServer(data, exclude?)`
 
 Converts server/API data into client/frontend data.
 
 ```js
-const clientData = adapter.unserialize(apiData);
+const clientData = adapter.fromServer(apiData);
 ```
 
-### `adapter.serialize(data, exclude?)`
+### `adapter.toServer(data, exclude?)`
 
 Converts client/frontend data into server/API data.
 
 ```js
-const apiPayload = adapter.serialize(clientData);
+const apiPayload = adapter.toServer(clientData);
 ```
 
 ### `exclude`
@@ -305,8 +316,8 @@ const apiPayload = adapter.serialize(clientData);
 Optional array of keys that should not be converted during automatic style conversion.
 
 ```js
-adapter.unserialize(data, ['raw_value']);
-adapter.serialize(data, ['rawValue']);
+adapter.fromServer(data, ['raw_value']);
+adapter.toServer(data, ['rawValue']);
 ```
 
 ## When to use this package
@@ -344,8 +355,8 @@ The core API remains the same:
 ```js
 const adapter = new ContractAdapter('user', schema);
 
-adapter.unserialize(apiData);
-adapter.serialize(clientData);
+adapter.fromServer(apiData);
+adapter.toServer(clientData);
 ```
 
 ## License
