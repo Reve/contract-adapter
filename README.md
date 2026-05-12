@@ -15,8 +15,8 @@ For example, a backend API may return this:
 
 ```json
 {
-  "user_id": 133,
-  "is_logged_in": true
+    "user_id": 133,
+    "is_logged_in": true
 }
 ```
 
@@ -24,19 +24,19 @@ But the frontend usually wants this:
 
 ```json
 {
-  "userId": 133,
-  "isLoggedIn": true
+    "userId": 133,
+    "isLoggedIn": true
 }
 ```
 
 `contract-adapter` gives you one explicit, reversible mapping layer:
 
-* `fromServer()` converts server/API data into client/frontend data.
-* `toServer()` converts client/frontend data back into server/API data.
-* Explicit schemas are supported.
-* Automatic `snakecase` ↔ `camelcase` conversion is supported.
-* Nested objects and arrays are supported.
-* Runtime dependencies: none.
+- `fromServer()` converts server/API data into client/frontend data.
+- `toServer()` converts client/frontend data back into server/API data.
+- Explicit schemas are supported.
+- Automatic `snakecase` ↔ `camelcase` conversion is supported.
+- Nested objects and arrays are supported.
+- Runtime dependencies: none.
 
 ## Installation
 
@@ -50,13 +50,13 @@ npm install contract-adapter
 import ContractAdapter from 'contract-adapter';
 
 const userFromApi = {
-  id: 133,
-  is_logged_in: true,
+    id: 133,
+    is_logged_in: true,
 };
 
 const userAdapter = new ContractAdapter('user', {
-  id: 'userId',
-  is_logged_in: 'isLoggedIn',
+    id: 'userId',
+    is_logged_in: 'isLoggedIn',
 });
 
 const clientUser = userAdapter.fromServer(userFromApi);
@@ -86,13 +86,13 @@ Use an object schema when you want full control over the API contract.
 import ContractAdapter from 'contract-adapter';
 
 const apiUser = {
-  full_name: 'John Doe',
-  email: 'john@example.com',
+    full_name: 'John Doe',
+    email: 'john@example.com',
 };
 
 const userAdapter = new ContractAdapter('user', {
-  full_name: 'fullName',
-  email: 'email',
+    full_name: 'fullName',
+    email: 'email',
 });
 
 const frontendUser = userAdapter.fromServer(apiUser);
@@ -122,8 +122,8 @@ import ContractAdapter from 'contract-adapter';
 const userAdapter = new ContractAdapter('user', ['snakecase', 'camelcase']);
 
 const frontendUser = userAdapter.fromServer({
-  full_name: 'John Doe',
-  email: 'john@example.com',
+    full_name: 'John Doe',
+    email: 'john@example.com',
 });
 
 // {
@@ -142,8 +142,8 @@ const apiPayload = userAdapter.toServer(frontendUser);
 The currently supported style values are:
 
 ```js
-'snakecase'
-'camelcase'
+'snakecase';
+'camelcase';
 ```
 
 ## Nested objects
@@ -154,21 +154,21 @@ Nested adapters let you model nested API contracts explicitly.
 import ContractAdapter from 'contract-adapter';
 
 const addressAdapter = new ContractAdapter('address', {
-  city: 'city',
-  postal_code: 'postalCode',
+    city: 'city',
+    postal_code: 'postalCode',
 });
 
 const userAdapter = new ContractAdapter('user', {
-  full_name: 'fullName',
-  address: addressAdapter,
+    full_name: 'fullName',
+    address: addressAdapter,
 });
 
 const apiUser = {
-  full_name: 'John Doe',
-  address: {
-    city: 'New York',
-    postal_code: '100001',
-  },
+    full_name: 'John Doe',
+    address: {
+        city: 'New York',
+        postal_code: '100001',
+    },
 };
 
 const frontendUser = userAdapter.fromServer(apiUser);
@@ -202,17 +202,17 @@ import ContractAdapter from 'contract-adapter';
 const storeAdapter = new ContractAdapter('store', ['snakecase', 'camelcase']);
 
 const frontendStore = storeAdapter.fromServer({
-  store_name: 'Super Store',
-  products: [
-    {
-      prod_name: 'Shampoo',
-      prod_price: 124,
-    },
-    {
-      prod_name: 'Shower Gel',
-      prod_price: 1234,
-    },
-  ],
+    store_name: 'Super Store',
+    products: [
+        {
+            prod_name: 'Shampoo',
+            prod_price: 124,
+        },
+        {
+            prod_name: 'Shower Gel',
+            prod_price: 1234,
+        },
+    ],
 });
 
 // {
@@ -240,11 +240,11 @@ import ContractAdapter from 'contract-adapter';
 const adapter = new ContractAdapter('payload', ['snakecase', 'camelcase']);
 
 const frontendPayload = adapter.fromServer(
-  {
-    full_name: 'John Doe',
-    raw_value: 'keep this key unchanged',
-  },
-  ['raw_value']
+    {
+        full_name: 'John Doe',
+        raw_value: 'keep this key unchanged',
+    },
+    ['raw_value'],
 );
 
 // {
@@ -284,15 +284,14 @@ Explicit mapping schema:
 
 ```js
 {
-  server_key: 'clientKey'
+    server_key: 'clientKey';
 }
 ```
 
 Automatic style schema:
 
 ```js
-['snakecase', 'camelcase']
-['camelcase', 'snakecase']
+['snakecase', 'camelcase'][('camelcase', 'snakecase')];
 ```
 
 ### `adapter.fromServer(data, exclude?)`
@@ -324,11 +323,11 @@ adapter.toServer(data, ['rawValue']);
 
 Use `contract-adapter` when:
 
-* You want a clear boundary between API contracts and frontend models.
-* You need conversion in both directions.
-* You need explicit field mapping, not only automatic key casing.
-* You have nested DTOs or arrays of DTOs.
-* You want a small package with no runtime dependencies.
+- You want a clear boundary between API contracts and frontend models.
+- You need conversion in both directions.
+- You need explicit field mapping, not only automatic key casing.
+- You have nested DTOs or arrays of DTOs.
+- You want a small package with no runtime dependencies.
 
 If you only need one-way key conversion, a general-purpose case-conversion package may be enough. `contract-adapter` is intended for reversible API contract adaptation.
 
@@ -359,7 +358,16 @@ adapter.fromServer(apiData);
 adapter.toServer(clientData);
 ```
 
+## Development
+
+### Scripts
+
+- `npm test`: Run tests with Vitest.
+- `npm run build`: Build CommonJS and ESM bundles with tsup.
+- `npm run lint`: Run ESLint.
+- `npm run typecheck`: Run TypeScript type check on declarations and tests.
+- `npm pack --dry-run`: Verify package contents.
+
 ## License
 
 MIT
-

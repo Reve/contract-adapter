@@ -1,7 +1,7 @@
 const VARIABLE_NAMIG_STYLES = ['snakecase', 'camelcase'];
 const NAMING_STYLES_REGEX = {
     snakecase: '[A-Z,a-z]+(_[A-Z,a-z]+)*',
-    camelcase: '[a-z]+((d)|([A-Z0-9][a-z0-9]+))*([A-Z])?'
+    camelcase: '[a-z]+((d)|([A-Z0-9][a-z0-9]+))*([A-Z])?',
 };
 
 function validateObjectKeyAdheresToCodingStyle(key, codingStyle) {

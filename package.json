@@ -12,22 +12,28 @@
     },
     "main": "dist/contract-adapter.js",
     "module": "dist/contract-adapter.es.js",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./index.d.ts",
+            "import": "./dist/contract-adapter.es.js",
+            "require": "./dist/contract-adapter.js"
+        }
+    },
+    "engines": {
+        "node": ">=18"
+    },
     "scripts": {
-        "build": "npm run clean && run-p build:*",
-        "build:development": "NODE_ENV=development rollup -c",
-        "build:production": "NODE_ENV=production rollup -c",
         "clean": "rimraf dist",
-        "lint": "yarn lint:cmd",
-        "lint:ci": "yarn lint:cmd",
-        "lint:cmd": "eslint . --ext '.js,.json,.snap' --cache",
-        "prebuild": "npm run clean",
-        "precommit": "lint-staged",
-        "prepublishOnly": "npm run build",
-        "test": "jest",
-        "test:ci": "jest --ci",
-        "test:coverage": "npm run test -- --coverage && cat ./coverage/lcov.info | coveralls",
-        "tsc:ci": "tsc --noEmit typescript-tests/*",
-        "typecheck": "run-p tsc:ci"
+        "build": "tsup",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "coverage": "vitest run --coverage",
+        "lint": "eslint .",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "typecheck": "tsc --noEmit",
+        "prepublishOnly": "npm run lint && npm run typecheck && npm test && npm run build"
     },
     "keywords": [
         "dto",
@@ -53,31 +59,14 @@
     "author": "Alexandru Gheorghita (Agile Geeks SRL-D)",
     "license": "MIT",
     "devDependencies": {
-        "@babel/core": "^7.0.0",
-        "@babel/plugin-proposal-class-properties": "^7.0.0",
-        "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-        "@babel/preset-env": "^7.0.0",
-        "babel-core": "^7.0.0-bridge.0",
-        "babel-eslint": "^10.0.1",
-        "babel-jest": "^24.8.0",
-        "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-        "coveralls": "^3.0.3",
-        "eslint": "^5.16.0",
-        "eslint-config-prettier": "^5.0.0",
-        "eslint-plugin-jest": "^22.6.4",
-        "eslint-plugin-json": "^1.4.0",
-        "eslint-plugin-prettier": "^3.1.0",
-        "husky": "^2.3.0",
-        "immutable": "^3.8.1",
-        "jest": "^24.8.0",
-        "lint-staged": "^8.1.7",
-        "npm-run-all": "^4.1.5",
-        "prettier": "^1.12.1",
-        "rimraf": "^2.6.3",
-        "rollup": "^1.15.6",
-        "rollup-plugin-babel": "^4.3.2",
-        "rollup-plugin-filesize": "^6.1.1",
-        "rollup-plugin-terser": "^5.0.0",
-        "typescript": "^3.4.5"
+        "@eslint/js": "^9.0.0",
+        "@vitest/coverage-v8": "^1.0.0",
+        "eslint": "^9.0.0",
+        "globals": "^15.0.0",
+        "prettier": "^3.0.0",
+        "rimraf": "^5.0.0",
+        "tsup": "^8.0.0",
+        "typescript": "^5.0.0",
+        "vitest": "^1.0.0"
     }
 }

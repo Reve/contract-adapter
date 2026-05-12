@@ -1,4 +1,4 @@
-// eslint-env jest
+import { describe, it, expect } from 'vitest';
 import ContractAdapter from './src/index';
 
 describe('input validation', () => {
@@ -30,17 +30,17 @@ describe('serialization/unserialization', () => {
     it('can serialize/unserialize', () => {
         const data = {
             full_name: 'John Doe',
-            email: 'john@example.com'
+            email: 'john@example.com',
         };
 
         const expectedData = {
             fullName: 'John Doe',
-            email: 'john@example.com'
+            email: 'john@example.com',
         };
 
         const schema = new ContractAdapter('test', {
             full_name: 'fullName',
-            email: 'email'
+            email: 'email',
         });
 
         expect(schema.serialize(expectedData)).toEqual(data);
@@ -52,26 +52,26 @@ describe('serialization/unserialization', () => {
             full_name: 'John Doe',
             address: {
                 city: 'New York',
-                postal_code: '100001'
-            }
+                postal_code: '100001',
+            },
         };
 
         const expectedData = {
             fullName: 'John Doe',
             address: {
                 city: 'New York',
-                postalCode: '100001'
-            }
+                postalCode: '100001',
+            },
         };
 
         const addressSchema = new ContractAdapter('address', {
             city: 'city',
-            postal_code: 'postalCode'
+            postal_code: 'postalCode',
         });
 
         const userSchema = new ContractAdapter('user', {
             full_name: 'fullName',
-            address: addressSchema
+            address: addressSchema,
         });
 
         expect(userSchema.serialize(expectedData)).toEqual(data);
@@ -81,12 +81,12 @@ describe('serialization/unserialization', () => {
     it('can serialize/unserialize from "snake_case" to "cameCase" and back', () => {
         const data = {
             full_name: 'John Doe',
-            email: 'john@example.com'
+            email: 'john@example.com',
         };
 
         const expectedData = {
             fullName: 'John Doe',
-            email: 'john@example.com'
+            email: 'john@example.com',
         };
 
         const schema = new ContractAdapter('test', ['snakecase', 'camelcase']);
@@ -98,12 +98,12 @@ describe('serialization/unserialization', () => {
     it('can serialize/unserialize from "camelCase" to "snake_case" and back', () => {
         const data = {
             fullName: 'John Doe',
-            email: 'john@example.com'
+            email: 'john@example.com',
         };
 
         const expectedData = {
             full_name: 'John Doe',
-            email: 'john@example.com'
+            email: 'john@example.com',
         };
 
         const schema = new ContractAdapter('test', ['camelcase', 'snakecase']);
@@ -117,16 +117,16 @@ describe('serialization/unserialization', () => {
             full_name: 'John Doe',
             address: {
                 city: 'New York',
-                postal_code: '100001'
-            }
+                postal_code: '100001',
+            },
         };
 
         const expectedData = {
             fullName: 'John Doe',
             address: {
                 city: 'New York',
-                postalCode: '100001'
-            }
+                postalCode: '100001',
+            },
         };
 
         const userSchema = new ContractAdapter('user', ['snakecase', 'camelcase']);
@@ -141,13 +141,13 @@ describe('serialization/unserialization', () => {
             products: [
                 {
                     prod_name: 'Sampoo',
-                    prod_price: 124
+                    prod_price: 124,
                 },
                 {
                     prod_name: 'Shower Gel',
-                    prod_price: 1234
-                }
-            ]
+                    prod_price: 1234,
+                },
+            ],
         };
 
         const expectedData = {
@@ -155,13 +155,13 @@ describe('serialization/unserialization', () => {
             products: [
                 {
                     prodName: 'Sampoo',
-                    prodPrice: 124
+                    prodPrice: 124,
                 },
                 {
                     prodName: 'Shower Gel',
-                    prodPrice: 1234
-                }
-            ]
+                    prodPrice: 1234,
+                },
+            ],
         };
 
         const storeSchema = new ContractAdapter('store', ['snakecase', 'camelcase']);
@@ -173,12 +173,12 @@ describe('serialization/unserialization', () => {
     it('can serialize/deserilize from camelcase key with number "admin1"', () => {
         const data = {
             admin1: 'John Doe',
-            admin22: 'Gus Doe'
+            admin22: 'Gus Doe',
         };
 
         const expectedData = {
             admin_1: 'John Doe',
-            admin_22: 'Gus Doe'
+            admin_22: 'Gus Doe',
         };
 
         const schema = new ContractAdapter('schema', ['camelcase', 'snakecase']);
@@ -190,12 +190,12 @@ describe('serialization/unserialization', () => {
     it('can serialize/deserialize even if the property of the obect is null or undefined', () => {
         const data = {
             full_name: 'John Doe',
-            email: null
+            email: null,
         };
 
         const expectedData = {
             fullName: 'John Doe',
-            email: null
+            email: null,
         };
 
         const schema = new ContractAdapter('schema', ['snakecase', 'camelcase']);
@@ -207,12 +207,12 @@ describe('serialization/unserialization', () => {
     it('can exclude keys from snakecase to camelcase conversion', () => {
         const data = {
             full_name: 'John Doe',
-            raw_value: 'keep me'
+            raw_value: 'keep me',
         };
 
         const expectedData = {
             fullName: 'John Doe',
-            raw_value: 'keep me'
+            raw_value: 'keep me',
         };
 
         const schema = new ContractAdapter('schema', ['snakecase', 'camelcase']);
@@ -224,12 +224,12 @@ describe('serialization/unserialization', () => {
     it('can exclude keys from camelcase to snakecase conversion', () => {
         const data = {
             fullName: 'John Doe',
-            rawValue: 'keep me'
+            rawValue: 'keep me',
         };
 
         const expectedData = {
             full_name: 'John Doe',
-            rawValue: 'keep me'
+            rawValue: 'keep me',
         };
 
         const schema = new ContractAdapter('schema', ['camelcase', 'snakecase']);
@@ -247,10 +247,10 @@ describe('serialization/unserialization', () => {
                     raw_value: 'keep me',
                     prod_meta: {
                         meta_name: 'Meta',
-                        raw_child: 'keep child'
-                    }
-                }
-            ]
+                        raw_child: 'keep child',
+                    },
+                },
+            ],
         };
 
         const expectedData = {
@@ -261,10 +261,10 @@ describe('serialization/unserialization', () => {
                     raw_value: 'keep me',
                     prodMeta: {
                         metaName: 'Meta',
-                        raw_child: 'keep child'
-                    }
-                }
-            ]
+                        raw_child: 'keep child',
+                    },
+                },
+            ],
         };
 
         const schema = new ContractAdapter('schema', ['snakecase', 'camelcase']);
@@ -278,20 +278,20 @@ describe('serialization/unserialization', () => {
         const data = {
             payload: {
                 full_name: 'John Doe',
-                raw_value: 'keep me'
-            }
+                raw_value: 'keep me',
+            },
         };
 
         const expectedData = {
             payload: {
                 fullName: 'John Doe',
-                raw_value: 'keep me'
-            }
+                raw_value: 'keep me',
+            },
         };
 
         const payloadSchema = new ContractAdapter('payload', ['snakecase', 'camelcase']);
         const schema = new ContractAdapter('schema', {
-            payload: payloadSchema
+            payload: payloadSchema,
         });
 
         expect(schema.unserialize(data, ['raw_value'])).toEqual(expectedData);
@@ -302,17 +302,17 @@ describe('serialization/unserialization', () => {
         it('behave exactly like unserialize/serialize', () => {
             const apiData = {
                 full_name: 'John Doe',
-                email: 'john@example.com'
+                email: 'john@example.com',
             };
 
             const clientData = {
                 fullName: 'John Doe',
-                email: 'john@example.com'
+                email: 'john@example.com',
             };
 
             const adapter = new ContractAdapter('test', {
                 full_name: 'fullName',
-                email: 'email'
+                email: 'email',
             });
 
             // Assert that fromServer(apiData) returns the same result as the previous unserialize(apiData).
@@ -329,26 +329,26 @@ describe('serialization/unserialization', () => {
                 full_name: 'John Doe',
                 address: {
                     city: 'New York',
-                    postal_code: '100001'
-                }
+                    postal_code: '100001',
+                },
             };
 
             const clientData = {
                 fullName: 'John Doe',
                 address: {
                     city: 'New York',
-                    postalCode: '100001'
-                }
+                    postalCode: '100001',
+                },
             };
 
             const addressAdapter = new ContractAdapter('address', {
                 city: 'city',
-                postal_code: 'postalCode'
+                postal_code: 'postalCode',
             });
 
             const userAdapter = new ContractAdapter('user', {
                 full_name: 'fullName',
-                address: addressAdapter
+                address: addressAdapter,
             });
 
             // Assert that fromServer() correctly converts nested server data to client data.
@@ -361,12 +361,12 @@ describe('serialization/unserialization', () => {
         it('converts keys according to automatic casing schema', () => {
             const apiData = {
                 full_name: 'John Doe',
-                email_address: 'john@example.com'
+                email_address: 'john@example.com',
             };
 
             const clientData = {
                 fullName: 'John Doe',
-                emailAddress: 'john@example.com'
+                emailAddress: 'john@example.com',
             };
 
             const adapter = new ContractAdapter('test', ['snakecase', 'camelcase']);
